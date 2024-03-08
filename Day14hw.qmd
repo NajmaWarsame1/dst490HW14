@@ -1,0 +1,57 @@
+---
+title: "Untitled"
+format: html
+editor: visual
+---
+
+```{r}
+library(magrittr)
+library(highcharter)
+
+
+hchart(mtcars, "scatter", hcaes(wt, mpg, z = drat, color = hp)) |>
+  hc_title(text = "Scatter chart with size and color")
+```
+
+```{r}
+library(tidyverse)
+churn2019 <- read.csv("churn_augsburg_2019_final.csv")
+churn2023 <- read.csv("churn_augsburg_2023_final.csv")
+
+churn2023_test<- churn2023 |>
+  filter(churn4 == 1)|>
+  group_by(LanguageUse, InterpreterNeededIndc)|>
+  summarise(count = n(),
+            .groups = 'drop') |>
+  mutate(InterpreterNeededIndc = ifelse(InterpreterNeededIndc == "N","No Interpreter","Interpreter needed"))
+
+  
+churn2019_test<- churn2019 |>
+  filter(churn4 == 1)|>
+  group_by(LanguageUse, InterpreterNeededIndc)|>
+  summarise(count = n(),
+            .groups = 'drop') |>
+  mutate(InterpreterNeededIndc = ifelse(InterpreterNeededIndc == "N","No Interpreter","Interpreter needed")) 
+
+hchart(churn2023_test, type = "bar", hcaes(x = LanguageUse, y =count, group = InterpreterNeededIndc)) |>
+  hc_title(text = "Churn 2023 by Language Use and Interpreter") |>
+  hc_subtitle(text = "Grouped by people who did churn")|>
+  hc_xAxis( title = list(text = "Language")) |>
+  hc_yAxis(title = list(text = "Count of Churn")) |>
+   hc_tooltip(pointFormat = '<br> Churn:<br>{point.y}') |>
+  hc_legend(verticalAlign = "top")
+  
+
+
+hchart(churn2019_test, type = "bar", hcaes(x = LanguageUse, y =count, group = InterpreterNeededIndc)) |>
+  hc_title(text = "Churn 2019 by Language Use and Interpreter") |>
+  hc_subtitle(text = "Grouped by people who did churn")|>
+  hc_xAxis( title = list(text = "Language")) |>
+  hc_yAxis(title = list(text = "Count of Churn")) |>
+   hc_tooltip(pointFormat = '<br> Churn:<br>{point.y}') |>
+  hc_legend(verticalAlign = "top")
+
+
+ 
+
+```
